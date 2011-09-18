@@ -24,6 +24,7 @@ namespace :db do
   [internal]Create the database if it doesn't exist
   }
   task :create, :roles => :db, :only => { :primary => true } do
+    puts "DEBUG: db:create"
     run rake_task("db:create")
   end
 

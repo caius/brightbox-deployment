@@ -23,19 +23,26 @@ def rake_task(taskname)
   command_to_run = "#{rake} #{rake_env} #{taskname}"
   # Figure out whether to use bundler or not
   if fetch(:bundle_disable, false)
+    puts "DEBUG: bundle_disable: true"
     # Do nowt
   elsif fetch(:bundle_force, false)
+    puts "DEBUG: bundle_force: true"
     command_to_run = "bundle exec #{command_to_run}"
   else
+    puts "DEBUG: check for gemfile and do it's thing there"
     "if [[ -f #{fetch(:bundle_gemfile, "Gemfile")} ]]; then #{command_to_run}; else #{command_to_run} ; fi"
   end
-  in_rails_root(command_to_run)
+  cmd = in_rails_root(command_to_run)
+  puts "DEBUG: rake_task: #{cmd.inspect}"
+  cmd
 end
 
 def in_rails_root(taskname)
   rails_env = fetch(:rails_env, "production")
   directory = current_release
-  %Q{sh -c 'cd #{directory}; RAILS_ENV=#{rails_env} #{taskname}'}
+  cmd = %Q{sh -c 'cd #{directory}; RAILS_ENV=#{rails_env} #{taskname}'}
+  puts "DEBUG: in_rails_root: #{cmd.inspect}"
+  cmd
 end
 
 def on_one_line(cmd_list)

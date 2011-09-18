@@ -91,6 +91,7 @@ namespace :deploy do
       Execute Rake tasks that need to be run once per system
     }
     task :singleton, :roles => :db, :only => {:primary => true} do
+      puts "DEBUG: db:create"
       run rake_task("db:create")
     end
 
