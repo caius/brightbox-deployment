@@ -20,7 +20,16 @@
 def rake_task(taskname)
   rake = fetch(:rake, "rake")
   rake_env = fetch(:rake_env, "")
-  in_rails_root("#{rake} #{rake_env} #{taskname}")
+  command_to_run = "#{rake} #{rake_env} #{taskname}"
+  # Figure out whether to use bundler or not
+  if fetch(:bundle_disable, false)
+    # Do nowt
+  elsif fetch(:bundle_force, false)
+    command_to_run = "bundle exec #{command_to_run}"
+  else
+    "if [[ -f #{fetch(:bundle_gemfile, "Gemfile")} ]]; then #{command_to_run}; else #{command_to_run} ; fi"
+  end
+  in_rails_root(command_to_run)
 end
 
 def in_rails_root(taskname)
